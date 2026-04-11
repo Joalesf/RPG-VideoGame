@@ -1,10 +1,36 @@
 <?php
-// En esta clase se implementa la lógica de la ronda de ataque, donde el personaje ataca al enemigo utilizando una habilidad específica elejidas mediante ramdon. Se valida el mana del personaje y se calcula el daño, incluyendo la posibilidad de un golpe crítico cada 3 ataques normales. Además, se reduce la vida del enemigo y se muestra un mensaje con el resultado del ataque.
-require_once 'Habilidad.php';
+require_once 'Origen.php';
 
+class Ronda_Ataque
+{
+    private $contadorAtaquesNormales;
 
+    public function __construct()
+    {
+        $this->contadorAtaquesNormales = 0;
+    }
 
+    public function ejecutarAtaqueAleatorio(Origen $atacante, CombatienteInterface $objetivo)
+    {
+        $habilidadesUsables = $atacante->obtenerHabilidadesUsables();
 
+        if (count($habilidadesUsables) === 0) {
+            throw new Exception($atacante->getNombre() . ' no tiene habilidades disponibles por falta de mana.');
+        }
 
+        $indice = rand(0, count($habilidadesUsables) - 1);
+        $habilidadElegida = $habilidadesUsables[$indice];
+        $esCritico = false;
 
-?> 
+        if ($this->contadorAtaquesNormales === 3) {
+            $esCritico = true;
+            $this->contadorAtaquesNormales = 0;
+        } else {
+            $this->contadorAtaquesNormales++;
+        }
+
+        $atacante->usarHabilidad($habilidadElegida->getNombre(), $objetivo, $esCritico);
+    }
+}
+
+?>

@@ -1,61 +1,98 @@
 <?php
-//Integrantes
-//Richard Rdriguez
-//Edgar Rosario
-//Jose Sanchez
-//Leonardo Liang
+// Integrantes:
+// Richard Rdriguez
+// Edgar Rosario
+// Jose Sanchez
+// Leonardo Liang
 
-/* Desarrolle el siguiente problema (100 puntos) 
-Desarrollar un sistema de combate para un videojuego RPG usando 
-programación orientada a objetos (POO) en PHP. Deberán aplicar 
-composición, interfaces, herencia y manejo de excepciones.  
+require_once 'Personaje.php';
+require_once 'Enemigo.php';
+require_once 'Ronda_Ataque.php';
 
-Personaje: 
-Debe tener: nombre, vida, mana (energía, ki, chakra, etc.), habilidades. 
-Añadir una habilidad al personaje. 
-Ejecutar la habilidad (valida mana y existencia de la habilidad). 
-Reducir la vida y muestre mensaje. 
-Validar si el personaje tiene vida. 
-Habilidad: 
-Debe tener: nombre, coste, daño base. 
+srand(2);
 
-Daños 
-Daño fijo.  
-Daño aleatorio (daño crítico o “Crítical hit”). 
+function mostrarHabilidades($personaje)
+{
+    $nombres = array();
 
-Ejemplo de Salida Esperada: 
-Gandalf aprendió: Bola de Fuego  
-Orco recibió 50 de daño. Vida restante: 70 
-Orco recibió 85 de daño. Vida restante: 0 
-¡Orco ha sido derrotado! 
-
-Retos avanzados (Opcionales, Puntos Adicionales) 
-Efectos de Estado: Ejemplo: Quemadura, que aplica daño por turno.  
-Inventario con Items: tipo del ítem (si es una poción o arma), nombre, peso. 
-Otros eventos: Gandalf aprendió una habilidad adicional, Gandalf ganó 25 de experiencia, Gandalf subió a nivel 3.   
- */
-
-//solamente se agregara habilidades cada 5 niveles del personaje, y el daño critico se dara cada 3 ataques normales, el daño critico sera el doble del daño base de la habilidad.
-abstract class Origen {
-    public $vida = 100; 
-    public $nombre; 
-    public $mana = 100;
-    public $habilidades = [];
-    public $nivel = 1;
-
-    public function __construct($nombre, $vida, $mana, $habilidades = [], $nivel = 1) {
-        $this->nombre = $nombre;
-        $this->vida = $vida;
-        $this->mana = $mana;
-        $this->nivel = $nivel;
+    foreach ($personaje->getHabilidades() as $habilidad) {
+        $nombres[] = $habilidad->getNombre();
     }
 
-    if (nivel % 5 == 0) {
-        //se llamara a un metodo para agregar una nueva habilidad al personaje
-        abstract public function newhabilidad($nivel);
+    echo 'Habilidades de ' . $personaje->getNombre() . ': ' . implode(', ', $nombres) . PHP_EOL;
+}
+
+function ejecutarCombate($titulo, $personaje, $enemigo, $maximoTurnos)
+{
+    $ronda = new Ronda_Ataque();
+
+    echo PHP_EOL;
+    echo $titulo . PHP_EOL;
+    echo str_repeat('-', strlen($titulo)) . PHP_EOL;
+    echo $enemigo->getNombre() . ' aparece con ' . $enemigo->getVida() . ' de vida.' . PHP_EOL;
+
+    $turno = 1;
+
+    while ($enemigo->estaVivo() && $turno <= $maximoTurnos) {
+        echo 'Turno ' . $turno . PHP_EOL;
+
+        try {
+            $ronda->ejecutarAtaqueAleatorio($personaje, $enemigo);
+        } catch (Exception $error) {
+            echo 'Excepcion controlada: ' . $error->getMessage() . PHP_EOL;
+            break;
         }
+
+        $turno++;
     }
 
+    if ($enemigo->estaVivo()) {
+        echo $enemigo->getNombre() . ' sobrevivio a esta demostracion.' . PHP_EOL;
+    }
+}
 
+echo 'SIMULACION DE COMBATE RPG' . PHP_EOL;
+echo '=========================' . PHP_EOL;
+
+$gandalf = new Personaje('Gandalf', 120, 100, 1);
+mostrarHabilidades($gandalf);
+
+$orco = new Enemigo('Orco', 140, 0, 1);
+ejecutarCombate('COMBATE 1 - NIVEL 1', $gandalf, $orco, 4);
+
+echo PHP_EOL . 'Gandalf gano experiencia en el combate.' . PHP_EOL;
+$gandalf->recuperarManaCompleto();
+$gandalf->subirNivel(5);
+mostrarHabilidades($gandalf);
+
+$trol = new Enemigo('Trol de Hielo', 120, 0, 5);
+ejecutarCombate('COMBATE 2 - NIVEL 5', $gandalf, $trol, 5);
+
+echo PHP_EOL . 'Gandalf gano experiencia otra vez.' . PHP_EOL;
+$gandalf->recuperarManaCompleto();
+$gandalf->subirNivel(10);
+mostrarHabilidades($gandalf);
+
+$dragon = new Enemigo('Dragon Joven', 180, 0, 10);
+ejecutarCombate('COMBATE 3 - NIVEL 10', $gandalf, $dragon, 6);
+
+echo PHP_EOL;
+echo 'PRUEBAS DE EXCEPCIONES' . PHP_EOL;
+echo '----------------------' . PHP_EOL;
+
+$aprendiz = new Personaje('Aprendiz', 100, 10, 1);
+$muneco = new Enemigo('Muneco de Prueba', 60, 0, 1);
+
+try {
+    $aprendiz->usarHabilidad('Bola de Fuego', $muneco);
+} catch (Exception $error) {
+    echo 'Excepcion controlada: ' . $error->getMessage() . PHP_EOL;
+}
+
+try {
+    $aprendiz->usarHabilidad('Impacto Electrico', $muneco);
+} catch (Exception $error) {
+    echo 'Excepcion controlada: ' . $error->getMessage() . PHP_EOL;
+}
 
 ?>

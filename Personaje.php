@@ -1,25 +1,27 @@
 <?php
-require_once 'Ronda_Ataque.php';
-require_once 'Habilidad.php';
-class Personaje {
-    private $nombre;
-    private $vida;
-    private $mana;
-    private $nivel;
-    private $habilidad;
+require_once 'Origen.php';
 
-    public function __construct($nombre = "Gandalf", $vida = 100, $mana = 100, $nivel = 1) {
-        $this->nombre = $nombre;
-        $this->vida = $vida;
-        $this->mana = $mana;
-        $this->nivel = $nivel;
-        $this->habilidad = new Habilidad();
+class Personaje extends Origen
+{
+    public function __construct($nombre = 'Gandalf', $vida = 100, $mana = 100, $nivel = 1)
+    {
+        parent::__construct($nombre, $vida, $mana, $nivel);
+        $this->desbloquearHabilidadesPorNivel();
     }
-    
-    if (nivel % 5 == 0) {
-        //se llamara a un metodo para agregar una nueva habilidad al personaje
-        abstract public function newhabilidad($nivel);
+
+    public function desbloquearHabilidadesPorNivel()
+    {
+        $this->agregarHabilidad(new Habilidad('Golpe Basico', 0, 20));
+        $this->agregarHabilidad(new Habilidad('Bola de Fuego', 30, 50));
+
+        if ($this->nivel >= 5) {
+            $this->agregarHabilidad(new Habilidad('Fragmento de Hielo', 25, 4));
         }
+
+        if ($this->nivel >= 10) {
+            $this->agregarHabilidad(new Habilidad('Impacto Electrico', 40, 60));
+        }
+    }
 }
 
 ?>
