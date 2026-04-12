@@ -1,36 +1,65 @@
 <?php
-require_once 'Origen.php';
+class Ronda_Ataque {
+    public function iniciarCombate($personaje, $enemigo) {
 
-class Ronda_Ataque
-{
-    private $contadorAtaquesNormales;
+        $ronda = 1;
+        while ($personaje->getVida() > 0 && $enemigo->getVida() > 0) {
+            echo "<strong>Ronda $ronda:</strong><br>";
+            
+            // Personaje ataca
+            $this->atacar($personaje, $enemigo);
+            $personaje->experiencia += 25;
+            while ($personaje->experiencia >= 15) {
+                $personaje->subirNivel();
+                $personaje->experiencia -= 15;
+            }
+            
+            if ($enemigo->getVida() > 0) {
+                // Enemigo ataca con habilidad aleatoria
+                $habilidadesEnemigo = $enemigo->getHabilidades();
+                $habilidadEnemigo = $habilidadesEnemigo[array_rand($habilidadesEnemigo)];
+                $dañoEnemigo = $habilidadEnemigo['dañoBase'];
+                echo $enemigo->getNombre() . " usó " . $habilidadEnemigo['name'] . " causando " . $dañoEnemigo . " de daño.<br>";
+                try {
+                    $personaje->recibirDaño($dañoEnemigo);
+                } catch (Exception $e) {
+                    echo $e->getMessage() . "<br>";
+                }
+            }
+            
+            $ronda++;
+            echo "<br>";
+        }
 
-    public function __construct()
-    {
-        $this->contadorAtaquesNormales = 0;
+        if ($personaje->getVida() > 0) {
+            echo "<strong>¡Victoria!</strong> " . $personaje->getNombre() . " derrotó al enemigo.<br>";
+        } else {
+            echo "<strong>Derrota:</strong> " . $personaje->getNombre() . " fue derrotado.<br>";
+        }
     }
 
-    public function ejecutarAtaqueAleatorio(Origen $atacante, CombatienteInterface $objetivo)
-    {
-        $habilidadesUsables = $atacante->obtenerHabilidadesUsables();
-
-        if (count($habilidadesUsables) === 0) {
-            throw new Exception($atacante->getNombre() . ' no tiene habilidades disponibles por falta de mana.');
+    public function atacar($personaje, $enemigo) {
+        $habilidades = $personaje->getHabilidades();
+        $habilidad = $habilidades[array_rand($habilidades)];
+        
+        // Si no tiene mana suficiente, usar Golpe Básico
+        if ($personaje->getMana() < $habilidad['constoMana']) {
+            $habilidad = $habilidades[0]; // Golpe Básico
+            echo $personaje->getNombre() . " no tiene suficiente mana, usando Golpe Básico.<br>";
         }
 
-        $indice = rand(0, count($habilidadesUsables) - 1);
-        $habilidadElegida = $habilidadesUsables[$indice];
-        $esCritico = false;
-
-        if ($this->contadorAtaquesNormales === 3) {
-            $esCritico = true;
-            $this->contadorAtaquesNormales = 0;
-        } else {
-            $this->contadorAtaquesNormales++;
+        $daño = $habilidad['dañoBase'];
+        if (rand(1, 2) == 1) {
+            $daño *= 4;
+            echo "¡Golpe crítico! ";
         }
 
-        $atacante->usarHabilidad($habilidadElegida->getNombre(), $objetivo, $esCritico);
+        $personaje->reduceMana($habilidad['constoMana']);
+
+        // Atacar al enemigo y reducir su vida
+        echo $personaje->getNombre() . " usó " . $habilidad['name'] . " y causó " . $daño . " de daño. " . "<br>" ;
+        $enemigo->recibirDaño($daño);
     }
 }
 
-?>
+?> 
