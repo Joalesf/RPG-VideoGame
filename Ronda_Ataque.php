@@ -1,6 +1,7 @@
 <?php
 class Ronda_Ataque {
     public function iniciarCombate($personaje, $enemigo) {
+
         $ronda = 1;
         while ($personaje->getVida() > 0 && $enemigo->getVida() > 0) {
             echo "<strong>Ronda $ronda:</strong><br>";
@@ -8,9 +9,9 @@ class Ronda_Ataque {
             // Personaje ataca
             $this->atacar($personaje, $enemigo);
             $personaje->experiencia += 25;
-            while ($personaje->experiencia >= 13) {
+            while ($personaje->experiencia >= 15) {
                 $personaje->subirNivel();
-                $personaje->experiencia -= 13;
+                $personaje->experiencia -= 15;
             }
             
             if ($enemigo->getVida() > 0) {

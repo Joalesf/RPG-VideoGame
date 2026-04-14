@@ -54,8 +54,8 @@ class Personaje extends Origen {
         return $this->mana;
     }
 
-    public function reduceMana($amount) {
-        $this->mana -= $amount;
+    public function reduceMana($costo) {
+        $this->mana -= $costo;
         if ($this->mana < 0) {
             $this->mana = 0;
         }

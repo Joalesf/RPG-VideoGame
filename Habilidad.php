@@ -26,8 +26,8 @@ class Habilidad {
                 echo $nombre . " aprendió: temblor, costo de mana: 10, daño base: 20 <br>";
                 break;
             case 3:
-                $this->habilidades[] = ["numero" => 3, "name" => "Bullying", "dañoBase" => 30, "constoMana" => 0];
-                echo $nombre . " aprendió: Bullying, costo de mana: 0, daño base: 30 <br>";
+                $this->habilidades[] = ["numero" => 3, "name" => "aturdir", "dañoBase" => 30, "constoMana" => 0];
+                echo $nombre . " aprendió: aturdir, costo de mana: 0, daño base: 30 <br>";
                 break;
             case 4:
                 $this->habilidades[] = ["numero" => 3, "name" => "Chorro de Agua", "dañoBase" => 30, "constoMana" => 15];
@@ -42,8 +42,8 @@ class Habilidad {
                 echo $nombre . " aprendió: Rayo de Trueno, costo de mana: 35, daño base: 50 <br>";
                 break;
             case 7:
-                $this->habilidades[] = ["numero" => 6, "name" => "Ilusion con ella", "dañoBase" => 60, "constoMana" => 50];
-                echo $nombre . " aprendió: Ilusion, costo de mana: 50, daño base: 60 <br>";
+                $this->habilidades[] = ["numero" => 6, "name" => "Ilusiones magicas", "dañoBase" => 60, "constoMana" => 50];
+                echo $nombre . " aprendió: Ilusiones magicas, costo de mana: 50, daño base: 60 <br>";
                 break;
             case 8:
                 $this->habilidades[] = ["numero" => 7, "name" => "Lluvia de Meteoritos", "dañoBase" => 80, "constoMana" => 70];
@@ -54,8 +54,8 @@ class Habilidad {
                 echo $nombre . " aprendió: Tornado de fuego, costo de mana: 90, daño base: 100 <br>";
                 break;
             case 10:
-                $this->habilidades[] = ["numero" => 9, "name" => "Las mentira de ella", "dañoBase" => 9999999, "constoMana" => 0];
-                echo $nombre . " aprendió: Las mentira de ella, costo de mana: 0, daño base: 9999999 <br>";
+                $this->habilidades[] = ["numero" => 9, "name" => "Doom", "dañoBase" => 9999999, "constoMana" => 0];
+                echo $nombre . " aprendió: Doom, costo de mana: 0, daño base: 9999999 <br>";
                 break;
                 
             default:
